@@ -280,18 +280,33 @@ ADMIN_PASS = "forge2026"
 
 @app.route("/hidden-admin-portal", methods=["GET","POST"])
 def admin():
-    if request.method == "POST":
-        if request.form.get("u") == ADMIN_USER and request.form.get("p") == ADMIN_PASS:
-            session["admin"] = True
-            return redirect("/dashboard")
+    error = ""
 
-    return """
-<form method="post">
-<input name="u" placeholder="username"><br><br>
-<input name="p" type="password"><br><br>
-<button>Login</button>
-</form>
-"""
+    try:
+        if request.method == "POST":
+            u = request.form.get("u")
+            p = request.form.get("p")
+
+            if u == ADMIN_USER and p == ADMIN_PASS:
+                session["admin"] = True
+                return redirect("/dashboard")
+            else:
+                error = "Wrong login"
+
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+    return render_template_string("""
+    <h2>Admin Login</h2>
+
+    <form method="post">
+        <input name="u" placeholder="username"><br><br>
+        <input name="p" type="password"><br><br>
+        <button>Login</button>
+    </form>
+
+    <p style="color:red;">{{error}}</p>
+    """, error=error)
 
 # ---------------- DELETE ----------------
 @app.route("/delete/<int:pid>")
