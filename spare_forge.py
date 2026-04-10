@@ -318,8 +318,8 @@ def dash():
     c = conn.cursor()
 
     if request.method == "POST":
-    file = request.files.get("i")
-    image_path = ""
+        file = request.files.get("i")
+        image_path = ""
 
     if file and file.filename:
         upload_result = cloudinary.uploader.upload(file)
