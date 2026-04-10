@@ -3,9 +3,18 @@ from flask import Flask, render_template_string, request, redirect, session
 import os
 from werkzeug.utils import secure_filename
 import sqlite3, uuid
+import cloudinary
+import cloudinary.uploader
+import os
 
 app = Flask(__name__)
 app.secret_key = "forge_ultra_secure"
+
+cloudinary.config(
+    cloud_name="dnes6ofia",
+    api_key="366336418672545",
+    api_secret="PYPpRBeLKMXV0uKtmyZi5f_m9YI"
+)
 
 UPLOAD_FOLDER = "static/uploads"
 BRAND_FOLDER = "static/brands"
@@ -309,48 +318,45 @@ def dash():
     c = conn.cursor()
 
     if request.method == "POST":
-        file = request.files.get("i")
-        image_path = ""
+    file = request.files.get("i")
+    image_path = ""
 
-        if file and file.filename:
-            filename = secure_filename(file.filename)
-            path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-            file.save(path)
-            image_path = "/" + path
+    if file and file.filename:
+        upload_result = cloudinary.uploader.upload(file)
+        image_path = upload_result["secure_url"]
 
-        try:
-            price = int(request.form.get("p","0").replace(",",""))
-        except:
-            price = 0
+    try:
+        price = int(request.form.get("p","0").replace(",",""))
+    except:
+        price = 0
 
-        try:
-            old_price = float(request.form.get("old_price") or 0)
-        except:
-            old_price = 0
+    try:
+        old_price = float(request.form.get("old_price") or 0)
+    except:
+        old_price = 0
 
-        c.execute("""
-        INSERT INTO products(
+    c.execute("""
+    INSERT INTO products(
         name,price,old_price,image,code,
         part_name,part_number,part_description,
         part_category,part_condition,brand
-        ) VALUES(?,?,?,?,?,?,?,?,?,?,?)
-        """,(
-            request.form.get("n",""),
-            price,
-            old_price,
-            image_path,
-            code(),
+    ) VALUES(?,?,?,?,?,?,?,?,?,?,?)
+    """,(
+        request.form.get("n",""),
+        price,
+        old_price,
+        image_path,
+        code(),
+        "",
+        request.form.get("pnum",""),
+        "",
+        "",
+        "",
+        request.form.get("brand","")
+    ))
 
-            "",
-            request.form.get("pnum",""),
-            "",
-            "",
-            "",
-            request.form.get("brand","")
-        ))
-
-        conn.commit()
-        return redirect("/dashboard")
+    conn.commit()
+    return redirect("/dashboard")
 
     c.execute("SELECT * FROM products")
     products = c.fetchall()
