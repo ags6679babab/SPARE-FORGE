@@ -14,7 +14,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(BRAND_FOLDER, exist_ok=True)
 
-DB = "/var/data/store.db"
+DB = "/tmp/store.db"
 
 # ---------------- INIT ----------------
 def init():
