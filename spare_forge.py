@@ -336,48 +336,48 @@ def dash():
         file = request.files.get("i")
         image_path = ""
 
-    if file and file.filename:
-        upload_result = cloudinary.uploader.upload(file)
-        image_path = upload_result["secure_url"]
+        if file and file.filename:
+            upload_result = cloudinary.uploader.upload(file)
+            image_path = upload_result["secure_url"]
 
-    try:
-        price = int(request.form.get("p","0").replace(",",""))
-    except:
-        price = 0
+        try:
+            price = int(request.form.get("p","0").replace(",",""))
+        except:
+            price = 0
 
-    try:
-        old_price = float(request.form.get("old_price") or 0)
-    except:
-        old_price = 0
+        try:
+            old_price = float(request.form.get("old_price") or 0)
+        except:
+            old_price = 0
 
-    c.execute("""
-    INSERT INTO products(
-        name,price,old_price,image,code,
-        part_name,part_number,part_description,
-        part_category,part_condition,brand
-    ) VALUES(?,?,?,?,?,?,?,?,?,?,?)
-    """,(
-        request.form.get("n",""),
-        price,
-        old_price,
-        image_path,
-        code(),
-        "",
-        request.form.get("pnum",""),
-        "",
-        "",
-        "",
-        request.form.get("brand","")
-    ))
+        c.execute("""
+        INSERT INTO products(
+            name,price,old_price,image,code,
+            part_name,part_number,part_description,
+            part_category,part_condition,brand
+        ) VALUES(?,?,?,?,?,?,?,?,?,?,?)
+        """,(
+            request.form.get("n",""),
+            price,
+            old_price,
+            image_path,
+            code(),
+            "",
+            request.form.get("pnum",""),
+            "",
+            "",
+            "",
+            request.form.get("brand","")
+        ))
 
-    conn.commit()
-    return redirect("/dashboard")
+        conn.commit()
+        return redirect("/dashboard")
 
     c.execute("SELECT * FROM products")
     products = c.fetchall()
     conn.close()
 
-    return render_template_string("""
+    return render_template_string(""" ... """, products=products)
 <h2>Dashboard</h2>
 
 <form method="post" enctype="multipart/form-data">
