@@ -80,14 +80,32 @@ def home():
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <style>
+*{
+    box-sizing: border-box;
+}
+
+.container{
+    width:100%;
+    max-width:1200px;
+    margin:auto;
+    overflow-x:hidden;
+}
+
 body{
     margin:0;
     font-family:Arial;
     background:#0a3d62;
     color:#fff;
+    overflow-x:hidden;
+    width:100%;
+}
+
+html, body{
+    max-width:100%;
+    overflow-x:hidden;
 }
 
 header{
@@ -131,9 +149,9 @@ header{
 
 .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-    gap:20px;
-    padding:20px;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:15px;
+    padding:15px;
 }
 
 .card{
@@ -174,7 +192,8 @@ footer{
 </style>
 </head>
 
-<body>
+</div>
+</body>
 
 <header>
 <div class="logo">
@@ -237,6 +256,7 @@ Ksh {{p[1]}}<br>
 <p>Phone: 0112752649</p>
 </footer>
 
+</div>
 </body>
 </html>
 """, products=products, brands=brands)
