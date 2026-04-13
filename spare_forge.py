@@ -247,8 +247,8 @@ footer{
 <div class="price">
 Ksh {{p[1]}}<br>
 
-{% if p[2] and p[2]|float > 0 %}
-<span class="old">Ksh {{ "{:,.0f}".format(p[2]) }}</span>
+{% if p[2] and p[2] > 0 %}
+<span class="old">Ksh {{ p[2] }}</span>
 {% endif %}
 </div>
 
