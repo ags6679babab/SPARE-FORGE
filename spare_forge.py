@@ -127,14 +127,14 @@ header{
     width: auto;
 }
 
-.search{padding:10px;width:220px;border-radius:20px;border:none;}
-
-.category{
-    display:flex;
-    gap:15px;
-    overflow-x:auto;
-    padding:15px;
-    background:#082f4f;
+.search{
+    padding:10px;
+    width:100%;
+    max-width:300px;
+    min-width:180px;
+    border-radius:20px;
+    border:none;
+    box-sizing:border-box;
 }
 
 .cat{
@@ -199,10 +199,6 @@ footer{
 <div class="logo">
 <img src="/static/logo.png">
 <div>
-<div style="font-weight:bold;">SPARE FORGE SPARES</div>
-<div style="font-size:12px;">Your garage online</div>
-</div>
-</div>
 
 <form>
 <input class="search" name="q" placeholder="Search by name or part number">
