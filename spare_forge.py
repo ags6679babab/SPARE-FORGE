@@ -444,5 +444,42 @@ Ksh {{ "{:,.0f}".format(p[2]|float) }}
 
 import os
 
+@app.route("/dashboard", methods=["GET", "POST"])
+def dashboard():
+    if not session.get("admin"):
+        return redirect("/hidden-admin-portal")
+
+    conn = sqlite3.connect(DB)
+    c = conn.cursor()
+
+    if request.method == "POST":
+        name = request.form.get("n")
+        price = request.form.get("p")
+        old_price = request.form.get("old_price")
+        part_number = request.form.get("pnum")
+        brand = request.form.get("brand")
+
+        image_url = ""
+
+        file = request.files.get("i")
+        if file and file.filename != "":
+            upload = cloudinary.uploader.upload(file)
+            image_url = upload["secure_url"]
+
+        c.execute("""INSERT INTO products 
+        (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+        (name, price, old_price, image_url, code(), name, part_number, "", "", "", brand))
+
+        conn.commit()
+
+    c.execute("SELECT * FROM products")
+    products = c.fetchall()
+    conn.close()
+
+    return render_template_string(""" 
+    <!-- KEEP YOUR HTML HERE EXACTLY -->
+    """, products=products)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
