@@ -149,7 +149,7 @@ header{
 
 .card img{
     width:100%;
-    max-height:220px;
+    max-height:120px;
     object-fit:contain;
     margin-bottom:5px;
 }
@@ -250,15 +250,19 @@ ADMIN_PASS = "forge2026"
 def admin():
     error = ""
 
-    if request.method == "POST":
-        u = request.form.get("u")
-        p = request.form.get("p")
+    try:
+        if request.method == "POST":
+            u = request.form.get("u")
+            p = request.form.get("p")
 
-        if u == ADMIN_USER and p == ADMIN_PASS:
-            session["admin"] = True
-            return redirect("/dashboard")
-        else:
-            error = "Wrong login"
+            if u == ADMIN_USER and p == ADMIN_PASS:
+                session["admin"] = True
+                return redirect("/dashboard")
+            else:
+                error = "Wrong login"
+
+    except Exception as e:
+        return f"Error: {str(e)}"
 
     return render_template_string("""
     <h2>Admin Login</h2>
@@ -322,16 +326,47 @@ def dashboard():
     conn.close()
 
     return render_template_string("""
-    <!DOCTYPE html>
-    <html>
-    <body>
-    <h2>Dashboard</h2>
-    {% for p in products %}
-        <p>{{p[0]}} - Ksh {{p[1]}}</p>
-    {% endfor %}
-    </body>
-    </html>
-    """, products=products)
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h2>Dashboard</h2>
+
+<form method="post" enctype="multipart/form-data">
+<input name="n" placeholder="Name">
+<input name="p" placeholder="Price">
+<input name="old_price" placeholder="Old Price">
+<input name="pnum" placeholder="Part Number">
+
+<select name="brand">
+<option>Nissan</option>
+<option>Volkswagen</option>
+<option>BMW</option>
+<option>Mercedes</option>
+<option>Mazda</option>
+<option>Toyota</option>
+<option>Subaru</option>
+</select>
+
+<input type="file" name="i">
+<button>Add Product</button>
+</form>
+
+<hr>
+
+{% for p in products %}
+<p>
+<b>{{p[0]}}</b> - Ksh {{p[1]}}
+<a href="/delete/{{p[11]}}">Delete</a>
+</p>
+{% endfor %}
+
+</body>
+</html>
+""", products=products)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
