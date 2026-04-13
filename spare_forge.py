@@ -205,7 +205,7 @@ footer{
 </div>
 
 <form>
-<input class="search" name="q" placeholder="Search by name or part number">
+<input class="search" name="q" placeholder="Search">
 </form>
 </header>
 
