@@ -5,7 +5,6 @@ from werkzeug.utils import secure_filename
 import sqlite3, uuid
 import cloudinary
 import cloudinary.uploader
-import os
 
 app = Flask(__name__)
 app.secret_key = "forge_ultra_secure"
@@ -106,8 +105,8 @@ header{
 }
 
 .logo img {
-    height: 200px;  /* bigger logo */
-    width: auto;    /* keeps aspect ratio */
+    height: 200px;
+    width: auto;
 }
 
 .search{padding:10px;width:220px;border-radius:20px;border:none;}
@@ -150,7 +149,7 @@ header{
 
 .card img{
     width:100%;
-    maximum height:120px;
+    max-height:220px;
     object-fit:contain;
     margin-bottom:5px;
 }
@@ -172,37 +171,6 @@ footer{
     padding:20px;
     text-align:center;
 }
-<style>
-
-.card{
-    background:transparent;
-    color:black;
-    border-radius:10px;
-    padding:8px;
-    text-align:center;
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-}
-
-.card img{
-    width:100%;
-    height:auto;
-    object-fit:contain;
-    max-height:220px;
-    margin-bottom:5px;
-}
-
-/* ✅ ADD IT HERE */
-.card h4, .card p {
-    margin:3px 0;
-}
-
-.price{
-    font-weight:bold;
-    color:green;
-}
-</style>
 </style>
 </head>
 
@@ -266,7 +234,7 @@ Ksh {{p[1]}}<br>
 </p>
 
 <p>Email: flexmuiru@email.com</p>
-<p>facebook: spare forge
+<p>facebook: spare forge</p>
 <p>Phone: 0112752649</p>
 </footer>
 
@@ -282,19 +250,15 @@ ADMIN_PASS = "forge2026"
 def admin():
     error = ""
 
-    try:
-        if request.method == "POST":
-            u = request.form.get("u")
-            p = request.form.get("p")
+    if request.method == "POST":
+        u = request.form.get("u")
+        p = request.form.get("p")
 
-            if u == ADMIN_USER and p == ADMIN_PASS:
-                session["admin"] = True
-                return redirect("/dashboard")
-            else:
-                error = "Wrong login"
-
-    except Exception as e:
-        return f"Error: {str(e)}"
+        if u == ADMIN_USER and p == ADMIN_PASS:
+            session["admin"] = True
+            return redirect("/dashboard")
+        else:
+            error = "Wrong login"
 
     return render_template_string("""
     <h2>Admin Login</h2>
@@ -324,126 +288,6 @@ def delete(pid):
     return redirect("/dashboard")
 
 # ---------------- DASHBOARD ----------------
-return render_template_string("""
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body{
-    font-family: Arial;
-    margin:0;
-    background:#0a3d62;
-    color:white;
-}
-
-.container{
-    max-width:900px;
-    margin:auto;
-    padding:20px;
-}
-
-h2{
-    text-align:center;
-}
-
-form{
-    background:#074173;
-    padding:20px;
-    border-radius:10px;
-}
-
-input, select{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-    border:none;
-    border-radius:5px;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    background:#00b894;
-    border:none;
-    color:white;
-    font-weight:bold;
-    border-radius:5px;
-    cursor:pointer;
-}
-
-.product{
-    background:white;
-    color:black;
-    padding:10px;
-    border-radius:8px;
-    margin-top:10px;
-}
-
-.delete{
-    color:red;
-    text-decoration:none;
-    margin-left:10px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<h2>Dashboard</h2>
-
-<form method="post" enctype="multipart/form-data">
-
-<input name="n" placeholder="Name">
-<input name="p" placeholder="Price">
-<input name="old_price" placeholder="Old Price">
-<input name="pnum" placeholder="Part Number">
-
-<select name="brand">
-<option>Nissan</option>
-<option>Volkswagen</option>
-<option>BMW</option>
-<option>Mercedes</option>
-<option>Mazda</option>
-<option>Toyota</option>
-<option>Subaru</option>
-</select>
-
-<input type="file" name="i">
-
-<button>Add Product</button>
-</form>
-
-<hr>
-
-{% for p in products %}
-<div class="product">
-<b>{{p[0]}}</b><br>
-Ksh {{p[1]}}
-
-{% if p[2]|float > 0 %}
-<br>
-<span style="text-decoration:line-through;color:gray;">
-Ksh {{ "{:,.0f}".format(p[2]|float) }}
-</span>
-{% endif %}
-
-<br>
-<a class="delete" href="/delete/{{p[11]}}" onclick="return confirm('Delete product?')">Delete</a>
-</div>
-{% endfor %}
-
-</div>
-
-</body>
-</html>
-""", products=products)
-
-import os
-
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     if not session.get("admin"):
@@ -477,8 +321,16 @@ def dashboard():
     products = c.fetchall()
     conn.close()
 
-    return render_template_string(""" 
-    <!-- KEEP YOUR HTML HERE EXACTLY -->
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html>
+    <body>
+    <h2>Dashboard</h2>
+    {% for p in products %}
+        <p>{{p[0]}} - Ksh {{p[1]}}</p>
+    {% endfor %}
+    </body>
+    </html>
     """, products=products)
 
 if __name__ == "__main__":
