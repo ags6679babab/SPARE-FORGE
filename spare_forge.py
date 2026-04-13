@@ -199,6 +199,8 @@ footer{
 <div class="logo">
 <img src="/static/logo.png">
 <div>
+</div>
+</div>
 
 <form>
 <input class="search" name="q" placeholder="Search by name or part number">
