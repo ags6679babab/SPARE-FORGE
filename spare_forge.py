@@ -324,68 +324,83 @@ def delete(pid):
     return redirect("/dashboard")
 
 # ---------------- DASHBOARD ----------------
-@app.route("/dashboard", methods=["GET","POST"])
-def dash():
-    if not session.get("admin"):
-        return redirect("/hidden-admin-portal")
+return render_template_string("""
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    conn = sqlite3.connect(DB)
-    c = conn.cursor()
+<style>
+body{
+    font-family: Arial;
+    margin:0;
+    background:#0a3d62;
+    color:white;
+}
 
-    if request.method == "POST":
-        file = request.files.get("i")
-        image_path = ""
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
 
-        if file and file.filename:
-            upload_result = cloudinary.uploader.upload(file)
-            image_path = upload_result["secure_url"]
+h2{
+    text-align:center;
+}
 
-        try:
-            price = int(request.form.get("p","0").replace(",",""))
-        except:
-            price = 0
+form{
+    background:#074173;
+    padding:20px;
+    border-radius:10px;
+}
 
-        try:
-            old_price = float(request.form.get("old_price") or 0)
-        except:
-            old_price = 0
+input, select{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border:none;
+    border-radius:5px;
+}
 
-        c.execute("""
-        INSERT INTO products(
-            name,price,old_price,image,code,
-            part_name,part_number,part_description,
-            part_category,part_condition,brand
-        ) VALUES(?,?,?,?,?,?,?,?,?,?,?)
-        """,(
-            request.form.get("n",""),
-            price,
-            old_price,
-            image_path,
-            code(),
-            "",
-            request.form.get("pnum",""),
-            "",
-            "",
-            "",
-            request.form.get("brand","")
-        ))
+button{
+    width:100%;
+    padding:12px;
+    background:#00b894;
+    border:none;
+    color:white;
+    font-weight:bold;
+    border-radius:5px;
+    cursor:pointer;
+}
 
-        conn.commit()
-        return redirect("/dashboard")
+.product{
+    background:white;
+    color:black;
+    padding:10px;
+    border-radius:8px;
+    margin-top:10px;
+}
 
-    c.execute("SELECT * FROM products")
-    products = c.fetchall()
-    conn.close()
+.delete{
+    color:red;
+    text-decoration:none;
+    margin-left:10px;
+}
+</style>
+</head>
 
-    return render_template_string("""
+<body>
+
+<div class="container">
+
 <h2>Dashboard</h2>
 
 <form method="post" enctype="multipart/form-data">
 
-<input name="n" placeholder="Name"><br>
-<input name="p" placeholder="Price"><br>
-<input name="old_price" placeholder="Old Price"><br>
-<input name="pnum" placeholder="Part Number"><br>
+<input name="n" placeholder="Name">
+<input name="p" placeholder="Price">
+<input name="old_price" placeholder="Old Price">
+<input name="pnum" placeholder="Part Number">
 
 <select name="brand">
 <option>Nissan</option>
@@ -395,9 +410,9 @@ def dash():
 <option>Mazda</option>
 <option>Toyota</option>
 <option>Subaru</option>
-</select><br><br>
+</select>
 
-<input type="file" name="i"><br><br>
+<input type="file" name="i">
 
 <button>Add Product</button>
 </form>
@@ -405,11 +420,23 @@ def dash():
 <hr>
 
 {% for p in products %}
-<p>
-<b>{{p[0]}}</b> - Ksh {{p[1]}}
-<a href="/delete/{{p[11]}}" onclick="return confirm('Delete product?')">Delete</a>
-</p>
+<div class="product">
+<b>{{p[0]}}</b><br>
+Ksh {{p[1]}}
+
+{% if p[2] and p[2] > 0 %}
+<br><span style="text-decoration:line-through;color:gray;">Ksh {{p[2]}}</span>
+{% endif %}
+
+<br>
+<a class="delete" href="/delete/{{p[11]}}" onclick="return confirm('Delete product?')">Delete</a>
+</div>
 {% endfor %}
+
+</div>
+
+</body>
+</html>
 """, products=products)
 
 import os
