@@ -424,8 +424,11 @@ button{
 <b>{{p[0]}}</b><br>
 Ksh {{p[1]}}
 
-{% if p[2] and p[2] > 0 %}
-<br><span style="text-decoration:line-through;color:gray;">Ksh {{p[2]}}</span>
+{% if p[2]|float > 0 %}
+<br>
+<span style="text-decoration:line-through;color:gray;">
+Ksh {{ "{:,.0f}".format(p[2]|float) }}
+</span>
 {% endif %}
 
 <br>
