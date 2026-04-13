@@ -210,15 +210,14 @@ footer{
 {% endif %}
 
 <h4>{{p[0]}}</h4>
-<p> {{ p[6] if p[6] else "N/A" }}</p>
+<p>{{ p[6] if p|length > 6 and p[6] else "N/A" }}</p>
 
 <div class="price">
 Ksh {{p[1]}}<br>
 
-{% if p[2] and p[2] > 0 %}
+{% if p[2] %}
 <span class="old">Ksh {{ p[2] }}</span>
 {% endif %}
-</div>
 
 </div>
 {% endfor %}
