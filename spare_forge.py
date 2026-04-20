@@ -162,36 +162,30 @@ form{
 
 .grid{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
+    grid-template-columns:repeat(2, 1fr);
     gap:10px;
     padding:10px;
 }
 
 /* tablet */
-@media (max-width: 900px){
+@media (min-width: 700px){
     .grid{
         grid-template-columns:repeat(3, 1fr);
     }
 }
 
-/* phone */
-@media (max-width: 600px){
+/* desktop */
+@media (min-width: 1000px){
     .grid{
-        grid-template-columns:repeat(2, 1fr);
-    }
-}
-
-/* very small phones */
-@media (max-width: 380px){
-    .grid{
-        grid-template-columns:repeat(2, 1fr);
+        grid-template-columns:repeat(4, 1fr);
     }
 }
 
 .card{
-    background:#fff;
-    border-radius:10px;
-    padding:8px;
+    background:transparent;
+    color:white;
+    border-radius:0;
+    padding:5px;
     text-align:center;
     display:flex;
     flex-direction:column;
@@ -254,9 +248,11 @@ footer{
 <div class="card">
 
 {% if p[3] %}
+<div style="display:flex; overflow-x:auto; gap:5px;">
 {% for img in p[3].split(',') %}
-<img src="{{img}}">
+<img src="{{img}}" style="width:100%; border-radius:8px;">
 {% endfor %}
+</div>
 {% endif %}
 
 <h4>{{p[0]}}</h4>
