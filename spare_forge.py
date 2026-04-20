@@ -233,7 +233,9 @@ footer{
 <div class="card">
 
 {% if p[3] %}
-<img src="{{p[3]}}">
+{% for img in p[3].split(',') %}
+<img src="{{img}}">
+{% endfor %}
 {% endif %}
 
 <h4>{{p[0]}}</h4>
@@ -337,10 +339,21 @@ def dashboard():
 
         image_url = ""
 
-        file = request.files.get("i")
-        if file and file.filename != "":
-            upload = cloudinary.uploader.upload(file)
-            image_url = upload["secure_url"]
+        image_urls = []
+
+files = request.files.getlist("i")
+
+for file in files:
+    if file and file.filename != "":
+        upload = cloudinary.uploader.upload(
+            file,
+            transformation=[
+                {"effect": "background_removal"}
+            ]
+        )
+        image_urls.append(upload["secure_url"])
+
+image_url = ",".join(image_urls)
 
         c.execute("""INSERT INTO products 
         (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
@@ -379,7 +392,7 @@ def dashboard():
 <option>Subaru</option>
 </select>
 
-<input type="file" name="i">
+<input type="file" name="i" multiple>
 <button>Add Product</button>
 </form>
 
