@@ -162,9 +162,30 @@ form{
 
 .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:15px;
-    padding:15px;
+    grid-template-columns:repeat(3, 1fr);
+    gap:10px;
+    padding:10px;
+}
+
+/* tablet */
+@media (max-width: 900px){
+    .grid{
+        grid-template-columns:repeat(3, 1fr);
+    }
+}
+
+/* phone */
+@media (max-width: 600px){
+    .grid{
+        grid-template-columns:repeat(2, 1fr);
+    }
+}
+
+/* very small phones */
+@media (max-width: 380px){
+    .grid{
+        grid-template-columns:repeat(2, 1fr);
+    }
 }
 
 .card{
