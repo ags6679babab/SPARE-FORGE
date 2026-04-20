@@ -330,7 +330,35 @@ def dashboard():
     conn = sqlite3.connect(DB)
     c = conn.cursor()
 
-    if request.
+    if request.method == "POST":
+    name = request.form.get("n")
+    price = request.form.get("p")
+    old_price = request.form.get("old_price")
+    part_number = request.form.get("pnum")
+    brand = request.form.get("brand")
+
+    image_urls = []
+
+    files = request.files.getlist("i")
+
+    for file in files:
+        if file and file.filename != "":
+            upload = cloudinary.uploader.upload(
+                file,
+                transformation=[
+                    {"effect": "background_removal"}
+                ]
+            )
+            image_urls.append(upload["secure_url"])
+
+    image_url = ",".join(image_urls)
+
+    c.execute("""INSERT INTO products 
+    (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+    (name, price, old_price, image_url, code(), name, part_number, "", "", "", brand))
+
+    conn.commit()
 
     c.execute("SELECT * FROM products")
     products = c.fetchall()
