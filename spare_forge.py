@@ -366,11 +366,16 @@ def dashboard():
         files = request.files.getlist("i")
 
         for file in files:
-            if file and file.filename != "":
-                upload = cloudinary.uploader.upload(file)
-                image_urls.append(upload["secure_url"])
+    if file and file.filename != "":
+        try:
+            upload = cloudinary.uploader.upload(file)
 
-        image_url = ",".join(image_urls)
+            url = upload.get("secure_url")
+            if url:
+                image_urls.append(url)
+
+        except Exception as e:
+            print("Cloudinary upload error:", e)
 
         # ✅ THIS MUST BE INSIDE THE POST BLOCK
         c.execute("""INSERT INTO products 
@@ -379,10 +384,6 @@ def dashboard():
         (name, price, old_price, image_url, code(), name, part_number, "", "", "", brand))
 
         conn.commit()
-
-    c.execute("SELECT * FROM products")
-    products = c.fetchall()
-    conn.close()
 
     c.execute("SELECT * FROM products")
     products = c.fetchall()
