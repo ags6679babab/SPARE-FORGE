@@ -115,6 +115,8 @@ header{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    flex-wrap:wrap; /* ✅ allows stacking on small screens */
+    gap:10px;
 }
 
 .logo{
@@ -124,11 +126,21 @@ header{
 }
 
 .logo img {
-    height: 200px;
+    height: 120px;
     width: auto;
 }
 
-.search{padding:10px;width:220px;border-radius:20px;border:none;}
+.search{
+    padding:10px;
+    width:100%;
+    max-width:220px;
+    border-radius:20px;
+    border:none;
+}
+
+form{
+    width:100%;
+}
 
 .category{
     display:flex;
@@ -195,10 +207,10 @@ footer{
 
 <body>
 
-<header>
+<<header>
 <div class="logo">
 <img src="/static/logo.png">
-<div>
+</div>
 
 <form>
 <input class="search" name="q" placeholder="Search">
