@@ -331,81 +331,81 @@ def dashboard():
     c = conn.cursor()
 
     if request.method == "POST":
-    name = request.form.get("n")
-    price = request.form.get("p")
-    old_price = request.form.get("old_price")
-    part_number = request.form.get("pnum")
-    brand = request.form.get("brand")
+        name = request.form.get("n")
+        price = request.form.get("p")
+        old_price = request.form.get("old_price")
+        part_number = request.form.get("pnum")
+        brand = request.form.get("brand")
 
-    image_urls = []
+        image_urls = []
 
-    files = request.files.getlist("i")
+        files = request.files.getlist("i")
 
-    for file in files:
-        if file and file.filename != "":
-            upload = cloudinary.uploader.upload(
-                file,
-                transformation=[
-                    {"effect": "background_removal"}
-                ]
-            )
-            image_urls.append(upload["secure_url"])
+        for file in files:
+            if file and file.filename != "":
+                upload = cloudinary.uploader.upload(
+                    file,
+                    transformation=[
+                        {"effect": "background_removal"}
+                    ]
+                )
+                image_urls.append(upload["secure_url"])
 
-    image_url = ",".join(image_urls)
+        image_url = ",".join(image_urls)
 
-    c.execute("""INSERT INTO products 
-    (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
-    (name, price, old_price, image_url, code(), name, part_number, "", "", "", brand))
+        c.execute("""INSERT INTO products 
+        (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+        (name, price, old_price, image_url, code(), name, part_number, "", "", "", brand))
 
-    conn.commit()
+        conn.commit()
 
     c.execute("SELECT * FROM products")
     products = c.fetchall()
     conn.close()
 
     return render_template_string("""
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
 
-<h2>Dashboard</h2>
+    <h2>Dashboard</h2>
 
-<form method="post" enctype="multipart/form-data">
-<input name="n" placeholder="Name">
-<input name="p" placeholder="Price">
-<input name="old_price" placeholder="Old Price">
-<input name="pnum" placeholder="Part Number">
+    <form method="post" enctype="multipart/form-data">
+    <input name="n" placeholder="Name">
+    <input name="p" placeholder="Price">
+    <input name="old_price" placeholder="Old Price">
+    <input name="pnum" placeholder="Part Number">
 
-<select name="brand">
-<option>Nissan</option>
-<option>Volkswagen</option>
-<option>BMW</option>
-<option>Mercedes</option>
-<option>Mazda</option>
-<option>Toyota</option>
-<option>Subaru</option>
-</select>
+    <select name="brand">
+    <option>Nissan</option>
+    <option>Volkswagen</option>
+    <option>BMW</option>
+    <option>Mercedes</option>
+    <option>Mazda</option>
+    <option>Toyota</option>
+    <option>Subaru</option>
+    </select>
 
-<input type="file" name="i" multiple>
-<button>Add Product</button>
-</form>
+    <input type="file" name="i" multiple>
+    <button>Add Product</button>
+    </form>
 
-<hr>
+    <hr>
 
-{% for p in products %}
-<p>
-<b>{{p[0]}}</b> - Ksh {{p[1]}}
-<a href="/delete/{{p[11]}}">Delete</a>
-</p>
-{% endfor %}
+    {% for p in products %}
+    <p>
+    <b>{{p[0]}}</b> - Ksh {{p[1]}}
+    <a href="/delete/{{p[11]}}">Delete</a>
+    </p>
+    {% endfor %}
 
-</body>
-</html>
-""", products=products)
+    </body>
+    </html>
+    """, products=products)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
