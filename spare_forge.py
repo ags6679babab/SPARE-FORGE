@@ -361,16 +361,22 @@ def dashboard():
         part_number = request.form.get("pnum")
         brand = request.form.get("brand")
 
-        image_urls = []
+        image_url = image_url if image_url else ""
 
-        files = request.files.getlist("i")
+files = request.files.getlist("i")
 
-        for file in files:
-            if file and file.filename != "":
-                upload = cloudinary.uploader.upload(file)
+for file in files:
+    if file and file.filename != "":
+        try:
+            upload = cloudinary.uploader.upload(file)
+
+            if upload and "secure_url" in upload:
                 image_urls.append(upload["secure_url"])
 
-        image_url = ",".join(image_urls)
+        except Exception as e:
+            print("Upload failed:", e)
+
+image_url = ",".join(image_urls) if image_urls else None
 
         c.execute("""INSERT INTO products 
         (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
