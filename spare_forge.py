@@ -113,7 +113,7 @@ header{
     background:#074173;
     padding:15px;
     display:flex;
-    justify-content:space-between;
+    justify-content:flex-end;
     align-items:center;
     flex-wrap:wrap; /* ✅ allows stacking on small screens */
     gap:10px;
@@ -133,7 +133,7 @@ header{
 .search{
     padding:10px;
     width:100%;
-    max-width:220px;
+    max-width:180px;
     border-radius:20px;
     border:none;
 }
