@@ -169,7 +169,6 @@ form{
 
 .card{
     background:#fff;
-    color:white;
     border-radius:10px;
     padding:8px;
     text-align:center;
