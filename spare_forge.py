@@ -169,7 +169,7 @@ form{
 
 .card{
     background:#fff;
-    color:black;
+    color:white;
     border-radius:10px;
     padding:8px;
     text-align:center;
@@ -180,9 +180,10 @@ form{
 
 .card img{
     width:100%;
-    max-height:120px;
-    object-fit:contain;
-    margin-bottom:5px;
+    height:160px;
+    object-fit:cover;
+    border-radius:10px;
+    background:transparent;
 }
 
 .price{font-weight:bold;color:green;}
@@ -343,12 +344,7 @@ def dashboard():
 
         for file in files:
             if file and file.filename != "":
-                upload = cloudinary.uploader.upload(
-                    file,
-                    transformation=[
-                        {"effect": "background_removal"}
-                    ]
-                )
+                upload = cloudinary.uploader.upload(file)
                 image_urls.append(upload["secure_url"])
 
         image_url = ",".join(image_urls)
