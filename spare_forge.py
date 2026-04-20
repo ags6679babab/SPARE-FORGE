@@ -361,29 +361,28 @@ def dashboard():
         part_number = request.form.get("pnum")
         brand = request.form.get("brand")
 
-        image_url = image_url if image_url else ""
+        image_urls = []
 
-files = request.files.getlist("i")
+        files = request.files.getlist("i")
 
-for file in files:
-    if file and file.filename != "":
-        try:
-            upload = cloudinary.uploader.upload(file)
-
-            if upload and "secure_url" in upload:
+        for file in files:
+            if file and file.filename != "":
+                upload = cloudinary.uploader.upload(file)
                 image_urls.append(upload["secure_url"])
 
-        except Exception as e:
-            print("Upload failed:", e)
+        image_url = ",".join(image_urls)
 
-image_url = ",".join(image_urls) if image_urls else None
-
+        # ✅ THIS MUST BE INSIDE THE POST BLOCK
         c.execute("""INSERT INTO products 
         (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
         VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
         (name, price, old_price, image_url, code(), name, part_number, "", "", "", brand))
 
         conn.commit()
+
+    c.execute("SELECT * FROM products")
+    products = c.fetchall()
+    conn.close()
 
     c.execute("SELECT * FROM products")
     products = c.fetchall()
