@@ -113,10 +113,16 @@ header{
     background:#074173;
     padding:15px;
     display:flex;
-    justify-content:flex-end;
+    justify-content:center;
     align-items:center;
     flex-wrap:wrap; /* ✅ allows stacking on small screens */
     gap:10px;
+}
+
+@media (max-width: 600px){
+    .logo img{
+        height:140px;
+    }
 }
 
 .logo{
@@ -126,8 +132,9 @@ header{
 }
 
 .logo img {
-    height: 120px;
+    height: 220px;
     width: auto;
+    max-width: 100%
 }
 
 .search{
