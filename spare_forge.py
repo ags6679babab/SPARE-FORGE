@@ -22,7 +22,8 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(BRAND_FOLDER, exist_ok=True)
 
-DB = "/tmp/store.db"
+# ✅ FIXED (persistent DB)
+DB = "store.db"
 
 # ---------------- INIT ----------------
 def init():
@@ -155,7 +156,7 @@ header{
 }
 
 .card{
-    background:transparent;
+    background:#fff;
     color:black;
     border-radius:10px;
     padding:8px;
@@ -192,8 +193,7 @@ footer{
 </style>
 </head>
 
-</div>
-</body>
+<body>
 
 <header>
 <div class="logo">
@@ -239,6 +239,8 @@ Ksh {{p[1]}}<br>
 {% endif %}
 
 </div>
+
+</div>
 {% endfor %}
 </div>
 
@@ -256,7 +258,6 @@ Ksh {{p[1]}}<br>
 <p>Phone: 0112752649</p>
 </footer>
 
-</div>
 </body>
 </html>
 """, products=products, brands=brands)
