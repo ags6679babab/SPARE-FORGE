@@ -199,10 +199,6 @@ footer{
 <div class="logo">
 <img src="/static/logo.png">
 <div>
-<div style="font-weight:bold;">SPARE FORGE SPARES</div>
-<div style="font-size:12px;">Your garage online</div>
-</div>
-</div>
 
 <form>
 <input class="search" name="q" placeholder="Search">
