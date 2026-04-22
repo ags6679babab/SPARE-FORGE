@@ -1,18 +1,7 @@
 import os
 import socket
 
-# Force IPv4 DNS resolution globally
-orig_getaddrinfo = socket.getaddrinfo
-
-def getaddrinfo_ipv4(*args, **kwargs):
-    return orig_getaddrinfo(args[0], args[1], socket.AF_INET)
-
-socket.getaddrinfo = getaddrinfo_ipv4
-
-import os
-import socket
-
-# FORCE IPv4 FIRST
+# FORCE IPv4 FIRST (keep if you want)
 _orig_getaddrinfo = socket.getaddrinfo
 
 def _ipv4(host, port, family=0, type=0, proto=0, flags=0):
@@ -21,17 +10,16 @@ def _ipv4(host, port, family=0, type=0, proto=0, flags=0):
 socket.getaddrinfo = _ipv4
 
 
-# IMPORTS
+# IMPORT FLASK FIRST
 from flask import Flask, render_template_string, request, redirect, session
 from werkzeug.utils import secure_filename
-from datetime import datetime, timedelta
 import uuid
 import cloudinary
 import cloudinary.uploader
 import psycopg2
 
 
-# 🔥 CREATE APP FIRST (THIS WAS MISSING)
+# 🔥 CREATE APP HERE (THIS IS REQUIRED BEFORE ANY app.*)
 app = Flask(__name__)
 
 # THEN CONFIG
