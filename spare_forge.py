@@ -454,3 +454,4 @@ def dashboard():
     </body>
     </html>
     """, products=products)
+
