@@ -1,3 +1,14 @@
+import os
+import socket
+
+# Force IPv4 DNS resolution globally
+orig_getaddrinfo = socket.getaddrinfo
+
+def getaddrinfo_ipv4(*args, **kwargs):
+    return orig_getaddrinfo(args[0], args[1], socket.AF_INET)
+
+socket.getaddrinfo = getaddrinfo_ipv4
+
 from datetime import datetime, timedelta
 from flask import Flask, render_template_string, request, redirect, session
 from werkzeug.utils import secure_filename
@@ -5,7 +16,6 @@ import uuid
 import cloudinary
 import cloudinary.uploader
 import psycopg2
-import os
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
