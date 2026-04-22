@@ -18,6 +18,11 @@ import cloudinary
 import cloudinary.uploader
 import psycopg2
 
+def get_conn():
+    return psycopg2.connect(
+        os.environ["DATABASE_URL"],
+        sslmode="require"
+    )
 
 # 🔥 CREATE APP HERE (THIS IS REQUIRED BEFORE ANY app.*)
 app = Flask(__name__)
