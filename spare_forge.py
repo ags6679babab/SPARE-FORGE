@@ -1,10 +1,21 @@
 from datetime import datetime, timedelta
 from flask import Flask, render_template_string, request, redirect, session
-import os
 from werkzeug.utils import secure_filename
-import sqlite3, uuid
+import uuid
 import cloudinary
 import cloudinary.uploader
+import psycopg2
+import os
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise Exception("DATABASE_URL is missing")
+
+
+def get_conn():
+    return psycopg2.connect(DATABASE_URL, sslmode='require')
+
 
 app = Flask(__name__)
 app.secret_key = "forge_ultra_secure"
@@ -12,7 +23,7 @@ app.secret_key = "forge_ultra_secure"
 cloudinary.config(
     cloud_name="dnes6ofia",
     api_key="366336418672545",
-    api_secret="PYPpRBeLKMXV0uKtmyZi5f_m9YI"
+    api_secret=os.environ.get("API_SECRET")
 )
 
 UPLOAD_FOLDER = "static/uploads"
@@ -22,12 +33,10 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(BRAND_FOLDER, exist_ok=True)
 
-# ✅ FIXED (persistent DB)
-DB = "store.db"
 
 # ---------------- INIT ----------------
 def init():
-    conn = sqlite3.connect(DB)
+    conn = get_conn()
     c = conn.cursor()
 
     c.execute("""CREATE TABLE IF NOT EXISTS products(
@@ -42,7 +51,7 @@ def init():
         part_category TEXT,
         part_condition TEXT,
         brand TEXT,
-        id INTEGER PRIMARY KEY AUTOINCREMENT
+        id SERIAL PRIMARY KEY
     )""")
 
     conn.commit()
@@ -59,16 +68,16 @@ def home():
     q = request.args.get("q", "")
     brand = request.args.get("brand", "")
 
-    conn = sqlite3.connect(DB)
+    conn = get_conn()
     c = conn.cursor()
 
     if q:
         c.execute("""SELECT * FROM products 
-        WHERE LOWER(name) LIKE ? OR LOWER(part_number) LIKE ?""",
-        ('%' + q.lower() + '%', '%' + q.lower() + '%'))
+        WHERE name ILIKE %s OR part_number ILIKE %s""",
+        ('%' + q + '%', '%' + q + '%'))
 
     elif brand:
-        c.execute("SELECT * FROM products WHERE brand=?", (brand,))
+        c.execute("SELECT * FROM products WHERE brand=%s", (brand,))
     else:
         c.execute("SELECT * FROM products")
 
@@ -336,10 +345,10 @@ def delete(pid):
     if not session.get("admin"):
         return redirect("/hidden-admin-portal")
 
-    conn = sqlite3.connect(DB)
+    conn = get_conn()
     c = conn.cursor()
 
-    c.execute("DELETE FROM products WHERE id=?", (pid,))
+    c.execute("DELETE FROM products WHERE id=%s", (pid,))
     conn.commit()
     conn.close()
 
@@ -351,13 +360,13 @@ def dashboard():
     if not session.get("admin"):
         return redirect("/hidden-admin-portal")
 
-    conn = sqlite3.connect(DB)
+    conn = get_conn()
     c = conn.cursor()
 
     if request.method == "POST":
         name = request.form.get("n")
-        price = request.form.get("p")
-        old_price = request.form.get("old_price")
+        price = int(request.form.get("p") or 0)
+        old_price = float(request.form.get("old_price") or 0)
         part_number = request.form.get("pnum")
         brand = request.form.get("brand")
 
@@ -382,7 +391,7 @@ def dashboard():
 
         c.execute("""INSERT INTO products 
         (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
         (
             name,
             price,
