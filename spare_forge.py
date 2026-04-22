@@ -373,7 +373,7 @@ def dashboard():
     conn = get_conn()
     c = conn.cursor()
 
-    if request.method == "POST":
+if request.method == "POST":
     name = request.form.get("n") or ""
     part_number = request.form.get("pnum") or ""
     brand = request.form.get("brand") or ""
@@ -389,41 +389,40 @@ def dashboard():
     except:
         old_price = 0.0
 
-        image_urls = []
+    image_urls = []
 
-        files = request.files.getlist("i")
+    files = request.files.getlist("i")
 
-        for file in files:
-            if file and file.filename != "":
-                try:
-                    upload = cloudinary.uploader.upload(file, resource_type="image")
-                    url = upload.get("secure_url") if upload else None
-                    if url:
-                        image_urls.append(url)
+    for file in files:
+        if file and file.filename != "":
+            try:
+                upload = cloudinary.uploader.upload(file, resource_type="image")
+                url = upload.get("secure_url") if upload else None
+                if url:
+                    image_urls.append(url)
+            except Exception as e:
+                print("Cloudinary upload error:", e)
 
-                except Exception as e:
-                    print("Cloudinary upload error:", e)
+    image_url = ",".join(image_urls) if image_urls else ""
 
-        image_url = ",".join(image_urls) if image_urls else ""
+    c.execute("""INSERT INTO products 
+    (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+    (
+        name,
+        price,
+        old_price,
+        image_url,
+        code(),
+        name,
+        part_number,
+        "",
+        "",
+        "",
+        brand
+    ))
 
-        c.execute("""INSERT INTO products 
-        (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-        (
-            name,
-            price,
-            old_price,
-            image_url,
-            code(),
-            name,
-            part_number,
-            "",
-            "",
-            "",
-            brand
-        ))
-
-        conn.commit()
+    conn.commit()
 
     c.execute("SELECT * FROM products")
     products = c.fetchall()
