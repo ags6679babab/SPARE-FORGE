@@ -374,11 +374,20 @@ def dashboard():
     c = conn.cursor()
 
     if request.method == "POST":
-        name = request.form.get("n")
-        price = int(request.form.get("p") or 0)
-        old_price = float(request.form.get("old_price") or 0)
-        part_number = request.form.get("pnum")
-        brand = request.form.get("brand")
+    name = request.form.get("n") or ""
+    part_number = request.form.get("pnum") or ""
+    brand = request.form.get("brand") or ""
+
+    # SAFE PRICE CONVERSION
+    try:
+        price = int(request.form.get("p"))
+    except:
+        price = 0
+
+    try:
+        old_price = float(request.form.get("old_price"))
+    except:
+        old_price = 0.0
 
         image_urls = []
 
@@ -387,8 +396,7 @@ def dashboard():
         for file in files:
             if file and file.filename != "":
                 try:
-                    upload = cloudinary.uploader.upload(file)
-
+                    upload = cloudinary.uploader.upload(file, resource_type="image")
                     url = upload.get("secure_url") if upload else None
                     if url:
                         image_urls.append(url)
@@ -397,9 +405,6 @@ def dashboard():
                     print("Cloudinary upload error:", e)
 
         image_url = ",".join(image_urls) if image_urls else ""
-
-        # convert list of image URLs into one string
-        image_url = ",".join(image_urls)
 
         c.execute("""INSERT INTO products 
         (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
