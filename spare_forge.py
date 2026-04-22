@@ -396,7 +396,7 @@ def dashboard():
                 except Exception as e:
                     print("Cloudinary upload error:", e)
 
-image_url = ",".join(image_urls) if image_urls else ""
+        image_url = ",".join(image_urls) if image_urls else ""
 
         # convert list of image URLs into one string
         image_url = ",".join(image_urls)
