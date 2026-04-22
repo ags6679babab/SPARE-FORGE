@@ -389,12 +389,14 @@ def dashboard():
                 try:
                     upload = cloudinary.uploader.upload(file)
 
-                    url = upload.get("secure_url")
+                    url = upload.get("secure_url") if upload else None
                     if url:
                         image_urls.append(url)
 
                 except Exception as e:
                     print("Cloudinary upload error:", e)
+
+image_url = ",".join(image_urls) if image_urls else ""
 
         # convert list of image URLs into one string
         image_url = ",".join(image_urls)
