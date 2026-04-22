@@ -9,23 +9,32 @@ def getaddrinfo_ipv4(*args, **kwargs):
 
 socket.getaddrinfo = getaddrinfo_ipv4
 
-from datetime import datetime, timedelta
+import os
+import socket
+
+# FORCE IPv4 FIRST
+_orig_getaddrinfo = socket.getaddrinfo
+
+def _ipv4(host, port, family=0, type=0, proto=0, flags=0):
+    return _orig_getaddrinfo(host, port, socket.AF_INET, type, proto, flags)
+
+socket.getaddrinfo = _ipv4
+
+
+# IMPORTS
 from flask import Flask, render_template_string, request, redirect, session
 from werkzeug.utils import secure_filename
+from datetime import datetime, timedelta
 import uuid
 import cloudinary
 import cloudinary.uploader
 import psycopg2
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
 
-if not DATABASE_URL:
-    raise Exception("DATABASE_URL is missing")
+# 🔥 CREATE APP FIRST (THIS WAS MISSING)
+app = Flask(__name__)
 
-
-def get_conn():
-    return psycopg2.connect(DATABASE_URL, sslmode='require')
-
+# THEN CONFIG
 app.secret_key = "forge_ultra_secure"
 
 cloudinary.config(
