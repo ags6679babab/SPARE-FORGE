@@ -26,8 +26,6 @@ if not DATABASE_URL:
 def get_conn():
     return psycopg2.connect(DATABASE_URL, sslmode='require')
 
-
-app = Flask(__name__)
 app.secret_key = "forge_ultra_secure"
 
 cloudinary.config(
