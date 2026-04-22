@@ -373,10 +373,10 @@ def dashboard():
     conn = get_conn()
     c = conn.cursor()
 
-if request.method == "POST":
-    name = request.form.get("n") or ""
-    part_number = request.form.get("pnum") or ""
-    brand = request.form.get("brand") or ""
+    if request.method == "POST":
+        name = request.form.get("n") or ""
+        part_number = request.form.get("pnum") or ""
+        brand = request.form.get("brand") or ""
 
     # SAFE PRICE CONVERSION
     try:
@@ -429,6 +429,7 @@ if request.method == "POST":
     conn.close()
 
     return render_template_string("""
+
     <!DOCTYPE html>
     <html>
     <head>
