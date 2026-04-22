@@ -20,7 +20,7 @@ import psycopg2
 
 def get_conn():
     return psycopg2.connect(
-        os.environ["DATABASE_URL"],
+        os.environ.get("DATABASE_URL"),
         sslmode="require"
     )
 
