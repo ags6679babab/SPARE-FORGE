@@ -89,7 +89,12 @@ def home():
     elif brand:
         c.execute("SELECT * FROM products WHERE brand=%s", (brand,))
     else:
-        c.execute("SELECT * FROM products")
+        c.execute("""
+SELECT name, price, old_price, image, code,
+part_name, part_number, part_description,
+part_category, part_condition, brand, id
+FROM products
+""")
 
     products = c.fetchall()
     conn.close()
@@ -418,7 +423,7 @@ def dashboard():
                 print("Uploading:", file.filename)
                 try:
                     upload = cloudinary.uploader.upload(file, resource_type="image")
-                    url = upload["secure_url"]
+                    url = upload.get("secure_url")
                     if url:
                         image_urls.append(url)
                 except Exception as e:
