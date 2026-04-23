@@ -378,57 +378,57 @@ def dashboard():
         part_number = request.form.get("pnum") or ""
         brand = request.form.get("brand") or ""
 
-    # SAFE PRICE CONVERSION
-    try:
-        price = int(request.form.get("p"))
-    except:
-        price = 0
+        # SAFE PRICE CONVERSION
+        try:
+            price = int(request.form.get("p"))
+        except:
+            price = 0
 
-    try:
-        old_price = float(request.form.get("old_price"))
-    except:
-        old_price = 0.0
+        try:
+            old_price = float(request.form.get("old_price"))
+        except:
+            old_price = 0.0
 
-    image_urls = []
+        image_urls = []
+        files = request.files.getlist("i")
 
-    files = request.files.getlist("i")
+        for file in files:
+            if file and file.filename != "":
+                try:
+                    upload = cloudinary.uploader.upload(file, resource_type="image")
+                    url = upload.get("secure_url") if upload else None
+                    if url:
+                        image_urls.append(url)
+                except Exception as e:
+                    print("Cloudinary upload error:", e)
 
-    for file in files:
-        if file and file.filename != "":
-            try:
-                upload = cloudinary.uploader.upload(file, resource_type="image")
-                url = upload.get("secure_url") if upload else None
-                if url:
-                    image_urls.append(url)
-            except Exception as e:
-                print("Cloudinary upload error:", e)
+        image_url = ",".join(image_urls) if image_urls else ""
 
-    image_url = ",".join(image_urls) if image_urls else ""
+        c.execute("""INSERT INTO products 
+        (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+        (
+            name,
+            price,
+            old_price,
+            image_url,
+            code(),
+            name,
+            part_number,
+            "",
+            "",
+            "",
+            brand
+        ))
 
-    c.execute("""INSERT INTO products 
-    (name, price, old_price, image, code, part_name, part_number, part_description, part_category, part_condition, brand)
-    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-    (
-        name,
-        price,
-        old_price,
-        image_url,
-        code(),
-        name,
-        part_number,
-        "",
-        "",
-        "",
-        brand
-    ))
+        conn.commit()
 
-    conn.commit()
-
+    # ALWAYS fetch products (outside POST)
     c.execute("SELECT * FROM products")
     products = c.fetchall()
     conn.close()
 
-    return render_template_string("""
+    return render_template_string(..., products=products)
 
     <!DOCTYPE html>
     <html>
