@@ -194,8 +194,8 @@ form{
 .grid{
     display:grid;
     grid-template-columns:repeat(2, 1fr);
-    gap:10px;
-    padding:10px;
+    gap:4px;
+    padding:4px;
 }
 
 /* tablet */
@@ -216,11 +216,11 @@ form{
     background:transparent;
     color:white;
     border-radius:0;
-    padding:5px;
+    padding:3px;
     text-align:center;
     display:flex;
     flex-direction:column;
-    gap:6px;
+    gap:3px;
 }
 
 .card img{
@@ -277,7 +277,6 @@ footer{
 <div class="grid">
 {% for p in products %}
 <div class="card">
-<p>{{p[3]}}</p>
 
 {% if p[3] %}
 <div style="display:flex; gap:10px; overflow-x:auto;">
@@ -299,7 +298,7 @@ footer{
 </div>
 {% endif %}
 
-<div style="display:flex; flex-direction:column; gap:4px; margin-top:8px; text-align:left;">
+<div style="display:flex; flex-direction:column; gap:2px; margin-top:4px; text-align:left;">
 
     <div style="font-weight:bold;">
         {{p[0]}}
@@ -313,7 +312,7 @@ footer{
         Ksh {{p[1]}}
     </div>
 
-    {% if p[2] %}
+    {% if p[2] and p[2] > 0 %}
     <div style="font-size:13px; color:gray; text-decoration:line-through;">
         Ksh {{p[2]}}
     </div>
@@ -416,12 +415,13 @@ def dashboard():
         brand = request.form.get("brand") or ""
 
         try:
-            price = int(request.form.get("p"))
+            price = float(request.form.get("p") or 0)
         except:
             price = 0
 
+
         try:
-            old_price = float(request.form.get("old_price"))
+            old_price = float(request.form.get("old_price") or 0)
         except:
             old_price = 0.0
 
