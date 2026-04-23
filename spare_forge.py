@@ -272,12 +272,25 @@ footer{
 <div class="grid">
 {% for p in products %}
 <div class="card">
+<p>{{p[3]}}</p>
 
 {% if p[3] %}
-<div style="display:flex; overflow-x:auto; gap:5px;">
-{% for img in p[3].split(',') %}
-<img src="{{img}}" style="width:100%; border-radius:8px;">
-{% endfor %}
+<div style="display:flex; gap:10px; overflow-x:auto;">
+    {% for img in p[3].split(',') %}
+        {% if img.strip() %}
+            <img
+                src="{{ img.strip() }}"
+                style="
+                    min-width:220px;
+                    max-width:220px;
+                    height:220px;
+                    object-fit:cover;
+                    border-radius:10px;
+                    display:block;
+                "
+            >
+        {% endif %}
+    {% endfor %}
 </div>
 {% endif %}
 
