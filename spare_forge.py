@@ -394,6 +394,7 @@ def dashboard():
 
         for file in files:
             if file and file.filename != "":
+                print("Uploading:", file.filename)
                 try:
                     upload = cloudinary.uploader.upload(file, resource_type="image")
                     url = upload.get("secure_url") if upload else None
