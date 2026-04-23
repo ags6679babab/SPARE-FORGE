@@ -363,18 +363,27 @@ def admin():
     """, error=error)
 
 # ---------------- DELETE ----------------
-@app.route("/delete/<int:pid>")
+@app.route("/delete/<pid>")
 def delete(pid):
     if not session.get("admin"):
         return redirect("/hidden-admin-portal")
+
+    try:
+        pid = int(pid)
+    except:
+        return "Invalid ID"
 
     conn = get_conn()
     c = conn.cursor()
 
     c.execute("DELETE FROM products WHERE id=%s", (pid,))
     conn.commit()
-    conn.close()
 
+    if c.rowcount == 0:
+        conn.close()
+        return "Delete failed: ID not found"
+
+    conn.close()
     return redirect("/dashboard")
 
 # ---------------- DASHBOARD ----------------
@@ -391,7 +400,6 @@ def dashboard():
         part_number = request.form.get("pnum") or ""
         brand = request.form.get("brand") or ""
 
-        # SAFE PRICE CONVERSION
         try:
             price = int(request.form.get("p"))
         except:
@@ -410,7 +418,7 @@ def dashboard():
                 print("Uploading:", file.filename)
                 try:
                     upload = cloudinary.uploader.upload(file, resource_type="image")
-                    url = upload.get("secure_url") if upload else None
+                    url = upload["secure_url"]
                     if url:
                         image_urls.append(url)
                 except Exception as e:
@@ -437,13 +445,18 @@ def dashboard():
 
         conn.commit()
 
-    # ALWAYS fetch products (outside POST)
-    c.execute("SELECT * FROM products")
+    # ✅ FIXED QUERY (ONLY CHANGE)
+    c.execute("""
+    SELECT name, price, old_price, image, code,
+    part_name, part_number, part_description,
+    part_category, part_condition, brand, id
+    FROM products
+    """)
+
     products = c.fetchall()
     conn.close()
 
     return render_template_string("""
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -485,4 +498,3 @@ def dashboard():
 </body>
 </html>
 """, products=products)
-
