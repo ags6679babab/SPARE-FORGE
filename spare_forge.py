@@ -76,32 +76,48 @@ def code():
 @app.route("/")
 def home():
     q = request.args.get("q", "")
+    q = (q or "").strip()
+
     brand = request.args.get("brand", "")
+
+    print("SEARCH Q:", q)
 
     conn = get_conn()
     c = conn.cursor()
 
     if q:
-        c.execute("""SELECT * FROM products 
-        WHERE name ILIKE %s OR part_number ILIKE %s""",
+        c.execute("""
+        SELECT name, price, old_price, image, code,
+        part_name, part_number, part_description,
+        part_category, part_condition, brand, id
+        FROM products
+        WHERE name ILIKE %s OR part_number ILIKE %s
+        """,
         ('%' + q + '%', '%' + q + '%'))
 
     elif brand:
-        c.execute("SELECT * FROM products WHERE brand=%s", (brand,))
+        c.execute("""
+        SELECT name, price, old_price, image, code,
+        part_name, part_number, part_description,
+        part_category, part_condition, brand, id
+        FROM products
+        WHERE brand=%s
+        """, (brand,))
+
     else:
         c.execute("""
-SELECT name, price, old_price, image, code,
-part_name, part_number, part_description,
-part_category, part_condition, brand, id
-FROM products
-""")
+        SELECT name, price, old_price, image, code,
+        part_name, part_number, part_description,
+        part_category, part_condition, brand, id
+        FROM products
+        """)
 
     products = c.fetchall()
     conn.close()
 
     brands = ["Nissan","Volkswagen","BMW","Mercedes","Mazda","Toyota","Subaru"]
 
-    return render_template_string("""
+    return render_template_string(""" 
 <!DOCTYPE html>
 <html>
 <head>
