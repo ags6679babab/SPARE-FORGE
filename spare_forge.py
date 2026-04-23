@@ -299,15 +299,25 @@ footer{
 </div>
 {% endif %}
 
-<h4>{{p[0]}}</h4>
-<p>{{ p[6] if p|length > 6 and p[6] else "N/A" }}</p>
+<div style="display:flex; flex-direction:column; gap:4px; margin-top:8px; text-align:left;">
 
-<div class="price">
-Ksh {{p[1]}}<br>
+    <div style="font-weight:bold;">
+        {{p[0]}}
+    </div>
 
-{% if p[2] %}
-<span class="old">Ksh {{ p[2] }}</span>
-{% endif %}
+    <div style="font-size:13px; color:#ccc;">
+        Part No: {{ p[6] if p|length > 6 and p[6] else "N/A" }}
+    </div>
+
+    <div style="font-size:15px; font-weight:bold; color:green;">
+        Ksh {{p[1]}}
+    </div>
+
+    {% if p[2] %}
+    <div style="font-size:13px; color:gray; text-decoration:line-through;">
+        Ksh {{p[2]}}
+    </div>
+    {% endif %}
 
 </div>
 
