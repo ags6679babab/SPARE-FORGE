@@ -312,7 +312,7 @@ footer{
         Ksh {{p[1]}}
     </div>
 
-    {% if p[2] and p[2]|float > 0 %}
+    {% if p[2] and p[2] > 0 %}
     <div style="font-size:13px; color:gray; text-decoration:line-through;">
         Ksh {{p[2]}}
     </div>
@@ -415,11 +415,18 @@ def dashboard():
         brand = request.form.get("brand") or ""
 
         price_raw = request.form.get("p")
-        price = int(price_raw) if price_raw and price_raw.isdigit() else 0
 
+        try:
+            price = int(float(str(price_raw).replace(",", "").strip()))
+        except:
+            price = 0
 
         old_raw = request.form.get("old_price")
-        old_price = int(old_raw) if old_raw and old_raw.isdigit() else 0
+        
+        try:
+            old_price = int(float(str(old_raw).replace(",", "").strip()))
+        except:
+            old_price = 0.0
 
         image_urls = []
         files = request.files.getlist("i")
