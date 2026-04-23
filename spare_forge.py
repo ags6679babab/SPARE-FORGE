@@ -429,47 +429,47 @@ def dashboard():
     products = c.fetchall()
     conn.close()
 
-    return render_template_string(..., products=products)
+    return render_template_string("""
 
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
 
-    <h2>Dashboard</h2>
+<h2>Dashboard</h2>
 
-    <form method="post" enctype="multipart/form-data">
-    <input name="n" placeholder="Name">
-    <input name="p" placeholder="Price">
-    <input name="old_price" placeholder="Old Price">
-    <input name="pnum" placeholder="Part Number">
+<form method="post" enctype="multipart/form-data">
+<input name="n" placeholder="Name">
+<input name="p" placeholder="Price">
+<input name="old_price" placeholder="Old Price">
+<input name="pnum" placeholder="Part Number">
 
-    <select name="brand">
-    <option>Nissan</option>
-    <option>Volkswagen</option>
-    <option>BMW</option>
-    <option>Mercedes</option>
-    <option>Mazda</option>
-    <option>Toyota</option>
-    <option>Subaru</option>
-    </select>
+<select name="brand">
+<option>Nissan</option>
+<option>Volkswagen</option>
+<option>BMW</option>
+<option>Mercedes</option>
+<option>Mazda</option>
+<option>Toyota</option>
+<option>Subaru</option>
+</select>
 
-    <input type="file" name="i" multiple>
-    <button>Add Product</button>
-    </form>
+<input type="file" name="i" multiple>
+<button>Add Product</button>
+</form>
 
-    <hr>
+<hr>
 
-    {% for p in products %}
-    <p>
-    <b>{{p[0]}}</b> - Ksh {{p[1]}}
-    <a href="/delete/{{p[11]}}">Delete</a>
-    </p>
-    {% endfor %}
+{% for p in products %}
+<p>
+<b>{{p[0]}}</b> - Ksh {{p[1]}}
+<a href="/delete/{{p[11]}}">Delete</a>
+</p>
+{% endfor %}
 
-    </body>
-    </html>
-    """, products=products)
+</body>
+</html>
+""", products=products)
 
