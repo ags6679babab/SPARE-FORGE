@@ -11,7 +11,7 @@ socket.getaddrinfo = _ipv4
 
 
 # IMPORT FLASK FIRST
-from flask import Flask, render_template_string, request, redirect, session
+from flask import Flask, render_template_string, request, redirect, session, send_from_directory
 from werkzeug.utils import secure_filename
 import uuid
 import cloudinary
@@ -73,6 +73,35 @@ def code():
     return "SFS-" + str(uuid.uuid4())[:5].upper()
 
 # ---------------- HOME ----------------
+@app.route("/product/<int:id>")
+def product_page(id):
+    conn = get_conn()
+    c = conn.cursor()
+
+    c.execute("""
+    SELECT name, price, old_price, image, brand, part_number
+    FROM products WHERE id=%s
+    """, (id,))
+
+    product = c.fetchone()
+    conn.close()
+
+    if not product:
+        return "Not found"
+
+    return render_template_string("""
+    <html>
+    <head>
+        <title>{{p[0]}} | Spare Forge Kenya</title>
+        <meta name="description" content="{{p[0]}} spare part in Kenya for {{p[4]}}">
+    </head>
+    <body>
+        <h1>{{p[0]}}</h1>
+        <p>Ksh {{p[1]}}</p>
+    </body>
+    </html>
+    """, p=product)
+
 @app.route("/")
 def home():
     q = request.args.get("q", "")
@@ -121,8 +150,18 @@ def home():
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="canonical" href="https://YOUR-DOMAIN.com/" />
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="google-site-verification" content="h-X6tHTJ_YuQoJz62E5_ts_yEqvOWTOOP3ZNziJqxn0" />
+
+<title>Car Spare Parts Kenya | Toyota, BMW, Nissan - Spare Forge</title>
+
+<meta name="description" content="Buy affordable car spare parts in Kenya. Toyota, BMW, Nissan, Mazda and more. Fast delivery and trusted sellers.">
+
+<meta name="keywords" content="spare parts Kenya, car parts Nairobi, Toyota parts Kenya, BMW spare parts, Nissan parts Kenya, cheap auto parts Kenya">
+
+<meta name="robots" content="index, follow">
 
 <style>
 *{
@@ -275,6 +314,14 @@ footer{
 <img src="/static/logo.png">
 </div>
 
+<h1 style="text-align:center; margin:10px 0; font-size:20px;">
+Affordable Car Spare Parts in Kenya
+</h1>
+
+<p style="text-align:center; font-size:14px; color:#ddd;">
+Toyota, BMW, Nissan, Mazda & Mercedes parts with fast delivery in Kenya.
+</p>
+
 <form>
 <input class="search" name="q" placeholder="Search">
 </form>
@@ -284,6 +331,7 @@ footer{
 {% for b in brands %}
 <div class="cat">
 <a href="/?brand={{b}}">
+    {{b}} Spare Parts Kenya
 <img src="/static/brands/{{b}}.jpg">
 <br><span style="color:white;font-weight:bold;">{{b}}</span>
 </a>
@@ -322,9 +370,11 @@ footer{
 
 <div style="display:flex; flex-direction:column; gap:2px; margin-top:4px; text-align:left;">
 
-    <div style="font-weight:bold;">
-        {{p[0]}}
-    </div>
+    <h2 style="font-weight:bold; font-size:16px;">
+<a href="/product/{{p[11]}}" style="color:white; text-decoration:none;">
+{{p[0]}} - {{p[10]}} Spare Parts Kenya
+</a>
+</h2>
 
     <div style="font-size:13px; color:#ccc;">
         Part No: {{ p[6] if p|length > 6 and p[6] else "N/A" }}
@@ -409,6 +459,14 @@ function closeModal(){
 </body>
 </html>
 """, products=products, brands=brands)
+
+@app.route("/sitemap.xml")
+def sitemap():
+    return app.send_static_file("sitemap.xml")
+
+@app.route("/robots.txt")
+def robots():
+    return app.send_static_file("robots.txt")
 
 # ---------------- ADMIN ----------------
 ADMIN_USER = "admin"
