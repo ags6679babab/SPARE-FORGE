@@ -310,14 +310,13 @@ footer{
 <body>
 
 <header>
-<header>
-<div class="logo">
-<img src="/static/logo.png">
-</div>
+    <div class="logo">
+        <img src="/static/logo.png">
+    </div>
 
-<form>
-<input class="search" name="q" placeholder="Search">
-</form>
+    <form>
+        <input class="search" name="q" placeholder="Search">
+    </form>
 </header>
 
 <div class="category">
