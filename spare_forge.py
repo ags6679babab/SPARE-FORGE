@@ -323,9 +323,9 @@ footer{
 {% for b in brands %}
 <div class="cat">
 <a href="/?brand={{b}}">
-    {{b}} Spare Parts Kenya
-<img src="/static/brands/{{b}}.jpg">
-<br><span style="color:white;font-weight:bold;">{{b}}</span>
+    <img src="/static/brands/{{b}}.jpg">
+    <br>
+    <span style="color:white;font-weight:bold;">{{b}}</span>
 </a>
 </div>
 {% endfor %}
