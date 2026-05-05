@@ -295,18 +295,20 @@ footer{
 <div class="card">
 
 {% if p[3] %}
-<div style="display:flex; gap:10px; overflow-x:auto;">
+<div style="
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));
+    gap:6px;
+">
     {% for img in p[3].split(',') %}
         {% if img.strip() %}
             <img
                 src="{{ img.strip() }}"
                 style="
-                    min-width:220px;
-                    max-width:220px;
-                    height:220px;
+                    width:100%;
+                    height:140px;
                     object-fit:cover;
                     border-radius:10px;
-                    display:block;
                 "
             >
         {% endif %}
