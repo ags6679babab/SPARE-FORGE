@@ -304,7 +304,9 @@ footer{
         {% if img.strip() %}
             <img
                 src="{{ img.strip() }}"
+                onclick="openModal(this.src)"
                 style="
+                    cursor:pointer;"
                     width:100%;
                     height:140px;
                     object-fit:cover;
@@ -355,6 +357,50 @@ footer{
 <p>facebook: spare forge</p>
 <p>Phone: 0112752649</p>
 </footer>
+
+<div id="imgModal" style="
+    display:none;
+    position:fixed;
+    z-index:9999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.95);
+    justify-content:center;
+    align-items:center;
+">
+
+    <span onclick="closeModal()" style="
+        position:absolute;
+        top:20px;
+        right:25px;
+        font-size:35px;
+        color:white;
+        cursor:pointer;
+    ">✖</span>
+
+    <img id="modalImg" style="
+        max-width:95%;
+        max-height:90%;
+        border-radius:10px;
+    ">
+</div>
+
+<!-- ✅ ADD THIS SCRIPT -->
+<script>
+function openModal(src){
+    const modal = document.getElementById("imgModal");
+    const modalImg = document.getElementById("modalImg");
+
+    modal.style.display = "flex";
+    modalImg.src = src;
+}
+
+function closeModal(){
+    document.getElementById("imgModal").style.display = "none";
+}
+</script>
 
 </body>
 </html>
