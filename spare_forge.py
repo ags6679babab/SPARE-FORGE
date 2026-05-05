@@ -122,6 +122,7 @@ def home():
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="google-site-verification" content="h-X6tHTJ_YuQoJz62E5_ts_yEqvOWTOOP3ZNziJqxn0" />
 
 <style>
 *{
