@@ -303,7 +303,8 @@ footer{
     {% for img in p[3].split(',') %}
         {% if img.strip() %}
             <img
-                src="{{ img.strip() }}"
+                src="{{ img.strip().replace('/upload/', '/upload/w_400,q_auto,f_auto/') }}"
+                loading="lazy"
                 onclick="openModal(this.src)"
                 style="
                     cursor:pointer;"
@@ -394,7 +395,9 @@ function openModal(src){
     const modalImg = document.getElementById("modalImg");
 
     modal.style.display = "flex";
-    modalImg.src = src;
+
+    // ✅ optimized full image (less data)
+    modalImg.src = src.replace('/upload/', '/upload/w_900,q_auto,f_auto/');
 }
 
 function closeModal(){
