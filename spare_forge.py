@@ -310,17 +310,10 @@ footer{
 <body>
 
 <header>
+<header>
 <div class="logo">
 <img src="/static/logo.png">
 </div>
-
-<h1 style="text-align:center; margin:10px 0; font-size:20px;">
-Affordable Car Spare Parts in Kenya
-</h1>
-
-<p style="text-align:center; font-size:14px; color:#ddd;">
-Toyota, BMW, Nissan, Mazda & Mercedes parts with fast delivery in Kenya.
-</p>
 
 <form>
 <input class="search" name="q" placeholder="Search">
